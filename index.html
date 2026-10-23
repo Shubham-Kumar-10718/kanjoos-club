@@ -1,3 +1,8 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Common Ground Trip Planner</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,6 +44,9 @@
   --soft: #1d2b2a; --good: #5fd08f; --good-soft: #153222; --chat: #101a19; --bubble: #1f2c2b; --phone: #000; color-scheme: dark;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; }
+img { max-width: 100%; }
 body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
 .wrap {
   max-width: 1060px; margin: 0 auto; padding-block: 28px 40px;
@@ -159,7 +167,8 @@ h2 { font-family: var(--display); font-weight: 800; font-size: 27px; line-height
 .done { font-family: var(--display); font-weight: 800; font-size: 20px; color: var(--good); }
 @media (prefers-reduced-motion: reduce) { .progress i { transition: none; } }
 </style>
-
+</head>
+<body>
 <div class="wrap">
   <section class="story" aria-label="About this prototype">
     <div>
@@ -511,3 +520,5 @@ function syncDemo() {
 buildDemo();
 go(0);
 </script>
+</body>
+</html>
