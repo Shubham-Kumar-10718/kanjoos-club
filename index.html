@@ -73,8 +73,18 @@ body { background: var(--bg); color: var(--ink); font-family: var(--body); font-
 .card h3 { margin: 0 0 4px; font-family: var(--display); font-size: 19px; font-weight: 800; }
 .card p { margin: 0; color: var(--muted); max-width: 60ch; }
 .card p + p { margin-top: 8px; }
-.demo h3 { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-.demo h3 small { font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--sun); letter-spacing: .06em; text-transform: uppercase; }
+.demo { border: 1px dashed var(--line); border-radius: 12px; padding: 0 16px; }
+.demo summary {
+  cursor: pointer; padding: 12px 0; display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
+  font-size: 13px; font-weight: 600; color: var(--muted); list-style: none;
+}
+.demo summary::-webkit-details-marker { display: none; }
+.demo summary span::before { content: "▸"; display: inline-block; width: 1.1em; transition: transform .15s; }
+.demo[open] summary span::before { transform: rotate(90deg); }
+.demo summary:focus-visible { outline: 2px solid var(--sea); outline-offset: 2px; border-radius: 4px; }
+.demo summary small { font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--sun); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+.demobody { padding-bottom: 14px; }
+.demobody p { margin: 0; color: var(--muted); font-size: 13px; max-width: 60ch; }
 .demo .frow { display: grid; grid-template-columns: 92px minmax(0, 1fr) 72px; gap: 10px; align-items: center; margin-top: 8px; font-size: 13px; }
 .demo .frow b { font-weight: 600; }
 .demo .frow span:last-child { font-family: var(--mono); font-size: 12px; text-align: right; font-variant-numeric: tabular-nums; }
@@ -177,11 +187,13 @@ h2 { font-family: var(--display); font-weight: 800; font-size: 27px; line-height
     </div>
     <ol class="steps" id="steps"></ol>
     <div class="card" id="note"></div>
-    <div class="card demo" id="demo" hidden>
-      <h3>Friends' private budgets <small>Demo only</small></h3>
-      <p>In the real app nobody sees these numbers. Drag them to watch the group's options change live.</p>
-      <div id="demoRows"></div>
-    </div>
+    <details class="demo" id="demo" hidden>
+      <summary><span>Reviewer tool: simulate friends' budgets</span><small>Not part of the app</small></summary>
+      <div class="demobody">
+        <p>In the real app, these numbers are never shown to anyone. Change them to test that the group's options update live, and that the person blocking an option isn't always you.</p>
+        <div id="demoRows"></div>
+      </div>
+    </details>
   </section>
 
   <div class="phone">
@@ -328,9 +340,9 @@ const STEPS = [
            "The ceiling covers the whole trip, flights included. Friends fly from different cities, so the same stay costs each person a different amount."] },
   { label: "The group sets theirs", title: "Nobody sees a number",
     body: ["Friends set their budgets in real time. The group only sees who has finished, never the amount.",
-           "Try the demo panel below: these are your friends' private budgets, which no one in the real app could see."] },
+           "Reviewers can open the tool below to simulate friends' budgets. It isn't part of the app."] },
   { label: "Trips that fit everyone", title: "The core moment",
-    body: ["The group only sees trips that are under every person's ceiling. The villa is gone, and nobody can tell who ruled it out. It may not even be you: drag Sana's budget and watch.",
+    body: ["The group only sees trips that are under every person's ceiling. The villa is gone, and nobody can tell who ruled it out. It may not even be you: open the reviewer tool below and lower Sana's budget.",
            "The sponsored stay only appears if it fits the whole group. Brands get a group that is ready to book, without seeing anyone's budget."] },
   { label: "Everyone books", title: "Fewer dropouts, more seats sold",
     body: ["Each friend pays their own share, flight and stay together. For Scapia, the plan converts with all 6 seats instead of 5.",
