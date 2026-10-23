@@ -2,7 +2,7 @@
 
 **Shubham Kumar** · Scapia Product Internship Assignment
 
-**Prototype:** https://shubham-kumar-10718.github.io/common-ground/
+**Prototype:** https://shubham-kumar-10718.github.io/kanjoos-club/
 
 ## The problem and insight
 

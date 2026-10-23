@@ -2,7 +2,7 @@
 
 Scapia Product Internship Assignment
 
-**Live prototype:** https://shubham-kumar-10718.github.io/common-ground/ To run it locally, open `index.html` in any browser. It needs no build step and has no dependencies.
+**Live prototype:** https://shubham-kumar-10718.github.io/kanjoos-club/ To run it locally, open `index.html` in any browser. It needs no build step and has no dependencies.
 
 ---
 
