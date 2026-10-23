@@ -18,22 +18,16 @@ Scapia Product Internship Assignment
 
 ## Evidence
 
-**[TO FILL before submitting. Replace every bracket with real answers. Do not submit invented numbers or quotes.]**
+**Status: hypothesis based on my own friend groups. Structured interviews have not been run yet.** I have not included numbers or quotes I haven't collected.
 
-**Method:** I sent an anonymous Google Form to [N] friends across [N] friend groups on [date]. It asked their real maximum for a 3-day Goa trip, and whether they had ever skipped a trip partly because of cost. I then compared the answers with what each group had actually voted for.
+**What I have seen myself:** in group trip planning on WhatsApp, price is decided by a public poll, and anyone who drops out gives a reason that isn't money ("family thing", "work came up"). Nobody in the group ever asks whether cost was the real reason.
 
-| What I found | Result |
-| --- | --- |
-| Private ceiling below the option the group picked | [X of N] people |
-| Skipped a trip or made an excuse partly because of cost | [X of N] people |
-| Said this in the group chat at the time | [X of N] people |
+**How I'm validating it:** an anonymous form to 3 friend groups that recently planned a trip, with two questions:
 
-**Quotes (from follow-up DMs):**
+1. "What's the most you could comfortably spend on a 3-day Goa trip, all-in?"
+2. "Have you ever skipped a trip, or made an excuse, partly because of cost?"
 
-- "[exact quote]" — [first name or initial, age, city]
-- "[exact quote]" — [first name or initial, age, city]
-
-**The key gap:** in the public poll, [X] people voted for the ₹[amount] option. Privately, [Y] of them said their limit was lower.
+I then compare each person's private answer with the option their group actually voted for. **The signal I'm looking for:** private ceilings below the option the group picked, from people who voted for that option in public. That gap is the insight in numbers.
 
 ## Why existing tools miss it
 
@@ -58,11 +52,11 @@ Two design choices protect privacy. Ceilings are set *before* any options are sh
 
 | Who pays | How much | Why they'd pay |
 | --- | --- | --- |
-| Scapia (booking commission) | [X]% commission on flights and stays, booked in one flow | One saved dropout in a group of 6 is 17% more seats sold on that plan. Every booking also runs through the Scapia card. |
-| Stays and resorts (sponsored listings) | ₹[X] per group shown, or a fee per booking | A sponsored stay appears only if it fits *every* person's ceiling. The advertiser reaches a group that can afford it and is about to book, without ever seeing anyone's budget. |
-| Travel partners (ads during and after booking) | ₹[X] per thousand views | Group insurance while the group decides. Scooter rentals and activities after booking, matched to where the group is staying. |
+| Scapia (booking commission) | Est. 2–3% on flights and 12–15% on stays (typical online travel agency rates) | One saved dropout in a group of 6 is 17% more seats sold on that plan. Every booking also runs through the Scapia card. |
+| Stays and resorts (sponsored listings) | Est. ₹40–60 per group shown, or 5% extra commission per booking | A sponsored stay appears only if it fits *every* person's ceiling. The advertiser reaches a group that can afford it and is about to book, without ever seeing anyone's budget. |
+| Travel partners (ads during and after booking) | Est. ₹200–300 per thousand views (audience is about to travel) | Group insurance while the group decides. Scooter rentals and activities after booking, matched to where the group is staying. |
 
-**Evidence they'd pay:** [TO FILL. e.g. "[X of N] people who skipped a trip said they would have gone if the plan had fit their budget." If a homestay or resort owner told you what they pay for listings today, quote them here.]
+**Evidence they'd pay:** pricing above is estimated, not yet validated. The strongest case is Scapia's own: a group of 6 that loses one friend books 5 seats instead of 6, so every saved dropout is 17% more booking revenue on that plan at no extra acquisition cost. For sponsored stays, the pitch to owners is that the listing is only shown to groups that can already afford it. Next step: ask 3–5 Goa homestay owners what they pay online travel agencies per booking today.
 
 ## What I'd test next
 
