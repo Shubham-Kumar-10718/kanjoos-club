@@ -1,0 +1,513 @@
+<title>Common Ground Trip Planner</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a story column (what to notice + live demo controls) beside a phone running the 5-screen flow; stacks on phones. */
+:root {
+  --bg: #eef3f2;
+  --panel: #ffffff;
+  --ink: #12211f;
+  --muted: #5a6d6a;
+  --line: #d6e0de;
+  --sea: #0f5e63;
+  --sea-ink: #ffffff;
+  --sea-soft: #dcecec;
+  --sun: #ff8a3d;
+  --sun-ink: #2b1200;
+  --sun-soft: #ffe9da;
+  --soft: #e7efee;
+  --good: #1d7a4a;
+  --good-soft: #dcf1e5;
+  --chat: #e6ddd4;
+  --bubble: #ffffff;
+  --phone: #0b1413;
+  --display: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+  --body: "Figtree", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c1312; --panel: #162120; --ink: #e5eeec; --muted: #98aba8; --line: #283736;
+    --sea: #4fb3b0; --sea-ink: #04201f; --sea-soft: #173332; --sun: #ff9d5c; --sun-ink: #2b1200; --sun-soft: #3a2414;
+    --soft: #1d2b2a; --good: #5fd08f; --good-soft: #153222; --chat: #101a19; --bubble: #1f2c2b; --phone: #000; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0c1312; --panel: #162120; --ink: #e5eeec; --muted: #98aba8; --line: #283736;
+  --sea: #4fb3b0; --sea-ink: #04201f; --sea-soft: #173332; --sun: #ff9d5c; --sun-ink: #2b1200; --sun-soft: #3a2414;
+  --soft: #1d2b2a; --good: #5fd08f; --good-soft: #153222; --chat: #101a19; --bubble: #1f2c2b; --phone: #000; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+.wrap {
+  max-width: 1060px; margin: 0 auto; padding-block: 28px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; grid-template-columns: minmax(0, 1fr) 384px; gap: 40px; align-items: start;
+}
+@media (max-width: 840px) { .wrap { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
+
+/* Story column */
+.story { min-width: 0; display: grid; gap: 16px; }
+.brand { font-family: var(--display); font-weight: 800; font-size: 38px; line-height: 1; letter-spacing: -.01em; }
+.brand span { color: var(--sea); }
+.tag { color: var(--muted); margin: 6px 0 0; max-width: 48ch; }
+.steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; }
+.steps button {
+  width: 100%; text-align: left; border: 1px solid transparent; background: none; color: var(--muted);
+  font: inherit; padding: 7px 10px; border-radius: 8px; cursor: pointer; display: flex; gap: 10px; align-items: baseline;
+}
+.steps button:hover { background: var(--soft); }
+.steps button:focus-visible { outline: 2px solid var(--sea); outline-offset: 2px; }
+.steps button[aria-current="step"] { background: var(--panel); border-color: var(--line); color: var(--ink); }
+.steps .n { font-family: var(--mono); font-size: 12px; color: var(--sea); }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+.card h3 { margin: 0 0 4px; font-family: var(--display); font-size: 19px; font-weight: 800; }
+.card p { margin: 0; color: var(--muted); max-width: 60ch; }
+.card p + p { margin-top: 8px; }
+.demo h3 { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.demo h3 small { font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--sun); letter-spacing: .06em; text-transform: uppercase; }
+.demo .frow { display: grid; grid-template-columns: 92px minmax(0, 1fr) 72px; gap: 10px; align-items: center; margin-top: 8px; font-size: 13px; }
+.demo .frow b { font-weight: 600; }
+.demo .frow span:last-child { font-family: var(--mono); font-size: 12px; text-align: right; font-variant-numeric: tabular-nums; }
+.demo .frow small { display: block; color: var(--muted); font-size: 11px; }
+input[type="range"] { width: 100%; accent-color: var(--sea); }
+
+/* Phone */
+.phone { background: var(--phone); border-radius: 40px; padding: 12px; width: 100%; max-width: 384px; margin: 0 auto; box-shadow: 0 30px 60px -30px rgba(0,0,0,.45); }
+.screen { background: var(--panel); border-radius: 30px; overflow: hidden; height: 740px; max-height: calc(100vh - 60px); min-height: 620px; display: flex; flex-direction: column; }
+.bar { display: flex; justify-content: space-between; padding: 10px 22px 4px; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.view { flex: 1; display: flex; flex-direction: column; min-height: 0; padding: 8px 18px 18px; gap: 14px; overflow-y: auto; }
+.eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+h2 { font-family: var(--display); font-weight: 800; font-size: 27px; line-height: 1.08; margin: 2px 0 0; text-wrap: balance; letter-spacing: -.01em; }
+.sub { color: var(--muted); margin: 4px 0 0; font-size: 14px; }
+.btn { appearance: none; border: 0; border-radius: 14px; padding: 14px 16px; font: 700 15px var(--body); cursor: pointer; background: var(--sea); color: var(--sea-ink); width: 100%; }
+.btn:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+.btn:disabled { opacity: .45; cursor: default; }
+.btn.ghost { background: var(--soft); color: var(--ink); }
+.spacer { flex: 1; }
+.av { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 12px; flex: none; color: #fff; }
+.row { display: flex; align-items: center; gap: 10px; }
+.lock { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--sea); background: var(--sea-soft); padding: 4px 10px; border-radius: 99px; }
+.ad { border: 1px dashed var(--line); border-radius: 12px; padding: 10px 12px; font-size: 13px; display: flex; gap: 10px; align-items: center; }
+.ad .tagad { font-family: var(--mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; flex: none; }
+.ad b { display: block; }
+.ad span { color: var(--muted); font-size: 12px; }
+
+/* 1. Chat */
+.chat { background: var(--chat); border-radius: 16px; padding: 12px; display: grid; gap: 8px; }
+.chathead { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; }
+.chathead span { font-weight: 500; color: var(--muted); }
+.bub { background: var(--bubble); border-radius: 4px 12px 12px 12px; padding: 8px 10px; font-size: 14px; max-width: 92%; }
+.bub b { font-size: 12px; display: block; }
+.bub.mine { justify-self: end; border-radius: 12px 4px 12px 12px; background: var(--sea-soft); }
+.poll { display: grid; gap: 8px; margin-top: 6px; }
+.popt { display: grid; gap: 3px; font-size: 13px; }
+.popt .top { display: flex; justify-content: space-between; gap: 8px; }
+.popt .meter { height: 6px; background: var(--soft); border-radius: 4px; overflow: hidden; }
+.popt .meter i { display: block; height: 100%; background: var(--sea); }
+.voters { display: flex; gap: 2px; }
+.voters .av { width: 18px; height: 18px; font-size: 9px; }
+.typing { font-size: 13px; font-style: italic; color: var(--muted); }
+
+/* 2. Budget */
+.big { font-family: var(--display); font-weight: 800; font-size: 46px; line-height: 1; font-variant-numeric: tabular-nums; }
+.slidebox { background: var(--soft); border-radius: 16px; padding: 16px; display: grid; gap: 10px; }
+.scale { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.fitline { font-size: 14px; }
+.fitline b { color: var(--sea); }
+.break { display: grid; gap: 4px; font-size: 13px; }
+.break div { display: flex; justify-content: space-between; }
+.break div span:last-child { font-variant-numeric: tabular-nums; }
+.break .tot { border-top: 1px solid var(--line); padding-top: 4px; font-weight: 700; }
+
+/* 3. Waiting */
+.people { display: grid; gap: 10px; }
+.who { flex: 1; min-width: 0; }
+.who b { display: block; font-size: 14px; }
+.who span { font-size: 12px; color: var(--muted); }
+.st { font-size: 12px; font-weight: 600; color: var(--muted); display: inline-flex; gap: 5px; align-items: center; }
+.st.on { color: var(--good); }
+.progress { height: 8px; background: var(--soft); border-radius: 6px; overflow: hidden; }
+.progress i { display: block; height: 100%; background: var(--sea); transition: width .4s; }
+
+/* 4. Fits */
+.tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; background: var(--soft); border-radius: 10px; padding: 3px; }
+.tabs button { border: 0; background: none; font: 600 13px var(--body); padding: 8px; border-radius: 8px; color: var(--muted); cursor: pointer; }
+.tabs button[aria-pressed="true"] { background: var(--panel); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+.tabs button:focus-visible { outline: 2px solid var(--sea); }
+.tabs small { display: block; font-weight: 500; font-size: 11px; }
+.stays { display: grid; gap: 10px; }
+.stay { border: 1px solid var(--line); border-radius: 14px; padding: 12px; display: grid; gap: 6px; }
+.stay.sponsored { border-color: var(--sun); background: var(--sun-soft); }
+.stay .top { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.stay .name { font-weight: 700; }
+.stay .price { font-family: var(--display); font-weight: 800; font-size: 20px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.stay .meta { font-size: 12px; color: var(--muted); }
+.stay .bottom { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.sp { font-family: var(--mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--sun-ink); background: var(--sun); border-radius: 4px; padding: 1px 6px; }
+.vote { border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 99px; padding: 5px 12px; font: 600 12px var(--body); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.vote[aria-pressed="true"] { background: var(--sea); color: var(--sea-ink); border-color: var(--sea); }
+.vote:focus-visible { outline: 2px solid var(--sun); }
+.hidden-note { font-size: 13px; color: var(--muted); background: var(--soft); border-radius: 10px; padding: 8px 12px; display: flex; gap: 8px; align-items: flex-start; }
+.empty { font-size: 14px; color: var(--muted); text-align: center; padding: 18px 8px; border: 1px dashed var(--line); border-radius: 14px; }
+
+/* 5. Booked */
+.pay { background: var(--sea); color: var(--sea-ink); border-radius: 16px; padding: 14px; display: grid; gap: 4px; }
+.pay .big { font-size: 36px; }
+.pay small { opacity: .85; }
+.done { font-family: var(--display); font-weight: 800; font-size: 20px; color: var(--good); }
+@media (prefers-reduced-motion: reduce) { .progress i { transition: none; } }
+</style>
+
+<div class="wrap">
+  <section class="story" aria-label="About this prototype">
+    <div>
+      <div class="brand">Common<span>Ground</span></div>
+      <p class="tag">Group trips that fit everyone's budget. Each friend sets a limit privately, and the group only sees options that work for all of them.</p>
+    </div>
+    <ol class="steps" id="steps"></ol>
+    <div class="card" id="note"></div>
+    <div class="card demo" id="demo" hidden>
+      <h3>Friends' private budgets <small>Demo only</small></h3>
+      <p>In the real app nobody sees these numbers. Drag them to watch the group's options change live.</p>
+      <div id="demoRows"></div>
+    </div>
+  </section>
+
+  <div class="phone">
+    <div class="screen">
+      <div class="bar"><span>9:12</span><span>Common Ground</span><span>5G</span></div>
+
+      <!-- 1. The poll -->
+      <div class="view" data-step="0">
+        <div>
+          <div class="eyebrow">Today, in the WhatsApp group</div>
+          <h2>The group picked a villa you can't afford</h2>
+        </div>
+        <div class="chat">
+          <div class="chathead">Goa Dec trip <span>6 friends</span></div>
+          <div class="bub"><b style="color:#b5462f">Aditya</b>Where do we stay? Vote!!
+            <div class="poll" id="poll"></div>
+          </div>
+          <div class="bub"><b style="color:#3a5fb0">Kabir</b>villa obviously, it has a pool</div>
+          <div class="bub mine" id="draft"><span class="typing">You're typing: “guys I might have a family thing that weekend…”</span></div>
+        </div>
+        <div class="card" style="padding:12px 14px">
+          <div class="row" style="align-items:flex-start">
+            <div class="av" style="background:#b5462f">A</div>
+            <div style="min-width:0">
+              <b>Aditya started a Common Ground plan</b>
+              <p class="sub" style="margin:2px 0 0">Set your budget privately. Nobody sees your number.</p>
+            </div>
+          </div>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn" data-next>Set my budget privately</button>
+      </div>
+
+      <!-- 2. Private budget -->
+      <div class="view" data-step="1" hidden>
+        <div>
+          <span class="lock">${LOCK} Only you see this</span>
+          <h2 style="margin-top:10px">What's the most you can spend on this trip?</h2>
+          <p class="sub">Everything included: flights from Delhi, stay for 3 nights, food and fun.</p>
+        </div>
+        <div class="slidebox">
+          <div class="big" id="myVal">₹15,000</div>
+          <input type="range" id="mySlider" min="8000" max="40000" step="500" value="15000" aria-label="Your total trip budget">
+          <div class="scale"><span>₹8k</span><span>₹40k</span></div>
+          <div class="fitline" id="myFit"></div>
+        </div>
+        <div class="card" style="padding:12px 14px">
+          <div class="eyebrow" style="margin-bottom:6px">Cheapest trip that fits you</div>
+          <div class="break" id="myBreak"></div>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn" data-next>Lock my budget</button>
+      </div>
+
+      <!-- 3. Waiting -->
+      <div class="view" data-step="2" hidden>
+        <div>
+          <div class="eyebrow">Goa · 3 nights</div>
+          <h2>Waiting for the group</h2>
+          <p class="sub">Everyone sets a number privately. Nobody, including Aditya, can see anyone's budget.</p>
+        </div>
+        <div class="progress"><i id="prog" style="width:0"></i></div>
+        <div class="people" id="people"></div>
+        <div class="ad"><span class="tagad">Ad</span><div><b>Group travel insurance · ₹149 each</b><span>Covers delays and cancellations for all 6. Partner offer.</span></div></div>
+        <div class="spacer"></div>
+        <button class="btn" id="seeFits" data-next disabled>See what fits everyone</button>
+      </div>
+
+      <!-- 4. Fits everyone -->
+      <div class="view" data-step="3" hidden>
+        <div>
+          <div class="eyebrow" id="fitsEyebrow">Fits all 6 budgets</div>
+          <h2>Trips that work for everyone</h2>
+        </div>
+        <div class="tabs" role="group" aria-label="Dates">
+          <button id="dDec" aria-pressed="true">12–15 Dec<small id="dDecN"></small></button>
+          <button id="dJan" aria-pressed="false">9–12 Jan<small id="dJanN"></small></button>
+        </div>
+        <div class="stays" id="stays"></div>
+        <div class="hidden-note" id="hiddenNote"></div>
+        <div class="spacer"></div>
+        <button class="btn" id="bookBtn" data-next>Book the group's pick</button>
+      </div>
+
+      <!-- 5. Booked -->
+      <div class="view" data-step="4" hidden>
+        <div>
+          <div class="eyebrow" id="bookedEyebrow"></div>
+          <h2 id="bookedTitle">Everyone pays their own share</h2>
+        </div>
+        <div class="pay">
+          <small>Your share · flight from Delhi + stay</small>
+          <div class="big" id="myShare">₹0</div>
+          <small>Pay with your Scapia card and earn rewards on your share</small>
+        </div>
+        <div class="progress"><i id="payProg" style="width:0"></i></div>
+        <div class="people" id="payList"></div>
+        <div class="done" id="doneLine" hidden>6 of 6 booked. Nobody dropped out.</div>
+        <div class="ad"><span class="tagad">Ad</span><div><b>Scooter rentals near your stay · from ₹350/day</b><span>Shown because your group booked in North Goa.</span></div></div>
+        <div class="spacer"></div>
+        <button class="btn ghost" id="restart">Start over</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const LOCK = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" fill="none"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none"/></svg>`;
+document.querySelectorAll(".lock").forEach(el => el.innerHTML = el.innerHTML.replace("${LOCK}", LOCK));
+
+const NIGHTS = 3, LOCAL = 3000; // food, scooters, entry: ₹1,000 a day
+const FLIGHTS = { // return fares per person, ₹
+  Delhi:     { dec: 7800, jan: 5600 },
+  Mumbai:    { dec: 4200, jan: 3100 },
+  Bengaluru: { dec: 4900, jan: 3600 },
+};
+const STAYS = [ // whole property for 6, per person per night
+  { id: "villa", name: "Villa Saudade", area: "Assagao", note: "Private pool, 3 BHK", ppn: 4200 },
+  { id: "casa", name: "Casa Azul", area: "Anjuna", note: "Boutique stay, breakfast", ppn: 2300 },
+  { id: "resort", name: "Seabreeze Resort", area: "Calangute", note: "Pool, 2 min to beach", ppn: 1800, sponsored: true },
+  { id: "palm", name: "Palm Grove Homestay", area: "Candolim", note: "Garden, home-cooked meals", ppn: 1500 },
+  { id: "hostel", name: "Vagator Social", area: "Vagator", note: "Private 6-bed room, cafe", ppn: 800 },
+];
+const DATES = { dec: "12–15 Dec", jan: "9–12 Jan" };
+const PEOPLE = [
+  { id: "me", name: "You", city: "Delhi", color: "#0f5e63", budget: 15000 },
+  { id: "aditya", name: "Aditya", city: "Mumbai", color: "#b5462f", budget: 35000 },
+  { id: "kabir", name: "Kabir", city: "Delhi", color: "#3a5fb0", budget: 28000 },
+  { id: "riya", name: "Riya", city: "Bengaluru", color: "#8a4fb0", budget: 22000 },
+  { id: "sana", name: "Sana", city: "Mumbai", color: "#b07a1f", budget: 18000 },
+  { id: "dev", name: "Dev", city: "Bengaluru", color: "#2f8a6a", budget: 25000 },
+];
+const P = Object.fromEntries(PEOPLE.map(p => [p.id, p]));
+const inr = n => "₹" + Math.round(n).toLocaleString("en-IN");
+const cost = (p, stay, d) => FLIGHTS[p.city][d] + stay.ppn * NIGHTS + LOCAL;
+const avatar = (p, s) => `<div class="av" style="background:${p.color}${s ? `;width:${s}px;height:${s}px;font-size:${s / 2.4}px` : ""}">${p.name[0]}</div>`;
+
+const STEPS = [
+  { label: "The public poll", title: "One plan, one person",
+    body: ["You're the friend with the tightest budget. The group voted for a ₹4,200/night villa in public. You can't afford it and won't say so in front of everyone.",
+           "Today, this ends with a made-up excuse and one less person on the trip."] },
+  { label: "Your private budget", title: "A number only you see",
+    body: ["Drag the slider. The count of trips that work for you updates as you move it, so you can see what your number means before you lock it.",
+           "The ceiling covers the whole trip, flights included. Friends fly from different cities, so the same stay costs each person a different amount."] },
+  { label: "The group sets theirs", title: "Nobody sees a number",
+    body: ["Friends set their budgets in real time. The group only sees who has finished, never the amount.",
+           "Try the demo panel below: these are your friends' private budgets, which no one in the real app could see."] },
+  { label: "Trips that fit everyone", title: "The core moment",
+    body: ["The group only sees trips that are under every person's ceiling. The villa is gone, and nobody can tell who ruled it out. It may not even be you: drag Sana's budget and watch.",
+           "The sponsored stay only appears if it fits the whole group. Brands get a group that is ready to book, without seeing anyone's budget."] },
+  { label: "Everyone books", title: "Fewer dropouts, more seats sold",
+    body: ["Each friend pays their own share, flight and stay together. For Scapia, the plan converts with all 6 seats instead of 5.",
+           "Partner ads after booking are matched to where the group is staying."] },
+];
+
+let step = 0, dates = "dec", myVote = null, votes = {}, timers = [];
+const views = [...document.querySelectorAll(".view")];
+const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
+const later = (ms, fn) => timers.push(setTimeout(fn, ms));
+
+function renderStory() {
+  const ol = document.getElementById("steps"); ol.innerHTML = "";
+  STEPS.forEach((s, i) => {
+    const li = document.createElement("li"), b = document.createElement("button");
+    b.innerHTML = `<span class="n">${i + 1}</span><span>${s.label}</span>`;
+    if (i === step) b.setAttribute("aria-current", "step");
+    b.onclick = () => go(i); li.appendChild(b); ol.appendChild(li);
+  });
+  const s = STEPS[step];
+  document.getElementById("note").innerHTML = `<h3>${s.title}</h3>` + s.body.map(p => `<p>${p}</p>`).join("");
+  document.getElementById("demo").hidden = step < 2;
+}
+
+function go(i) {
+  clearTimers(); step = i;
+  views.forEach(v => v.hidden = Number(v.dataset.step) !== i);
+  renderStory();
+  if (i === 0) renderPoll();
+  if (i === 1) renderBudget();
+  if (i === 2) startWaiting();
+  if (i === 3) startFits();
+  if (i === 4) startBooking();
+}
+document.querySelectorAll("[data-next]").forEach(b => b.addEventListener("click", () => go(step + 1)));
+document.getElementById("restart").onclick = () => { P.me.budget = 15000; document.getElementById("mySlider").value = 15000; go(0); };
+
+// 1. Poll
+function renderPoll() {
+  const opts = [
+    { label: "Villa with pool · ₹4,200/night each", who: ["aditya", "kabir", "riya", "dev"] },
+    { label: "Homestay · ₹1,500/night each", who: ["sana"] },
+  ];
+  document.getElementById("poll").innerHTML = opts.map(o => `
+    <div class="popt"><div class="top"><span>${o.label}</span><b>${o.who.length}</b></div>
+    <div class="meter"><i style="width:${o.who.length / 5 * 100}%"></i></div>
+    <div class="voters">${o.who.map(id => avatar(P[id], 18)).join("")}</div></div>`).join("");
+}
+
+// 2. Budget
+const slider = document.getElementById("mySlider");
+slider.addEventListener("input", () => { P.me.budget = Number(slider.value); renderBudget(); syncDemo(); });
+function renderBudget() {
+  const me = P.me;
+  document.getElementById("myVal").textContent = inr(me.budget);
+  const all = [];
+  for (const d of ["dec", "jan"]) for (const s of STAYS) all.push({ d, s, c: cost(me, s, d) });
+  const ok = all.filter(o => o.c <= me.budget);
+  document.getElementById("myFit").innerHTML = ok.length
+    ? `<b>${ok.length} of ${all.length}</b> trip options work for you.`
+    : `No option fits yet. The cheapest trip from Delhi is ${inr(Math.min(...all.map(o => o.c)))}.`;
+  const best = all.sort((a, b) => a.c - b.c)[0];
+  document.getElementById("myBreak").innerHTML = `
+    <div><span>Return flight Delhi–Goa · ${DATES[best.d]}</span><span>${inr(FLIGHTS.Delhi[best.d])}</span></div>
+    <div><span>${best.s.name} · ${NIGHTS} nights, your share</span><span>${inr(best.s.ppn * NIGHTS)}</span></div>
+    <div><span>Food, scooter, entry</span><span>${inr(LOCAL)}</span></div>
+    <div class="tot"><span>Total</span><span>${inr(best.c)}</span></div>`;
+}
+
+// 3. Waiting (friends finish in real time)
+let setIds = new Set();
+function startWaiting() {
+  setIds = new Set(["me"]);
+  renderPeople();
+  ["sana", "kabir", "dev", "riya", "aditya"].forEach((id, k) => later(700 + k * 750, () => { setIds.add(id); renderPeople(); }));
+}
+function renderPeople() {
+  document.getElementById("people").innerHTML = PEOPLE.map(p => {
+    const on = setIds.has(p.id);
+    return `<div class="row">${avatar(p)}<div class="who"><b>${p.name}</b><span>Flying from ${p.city}</span></div>
+      <span class="st ${on ? "on" : ""}">${on ? LOCK + " Set privately" : "Deciding…"}</span></div>`;
+  }).join("");
+  document.getElementById("prog").style.width = (setIds.size / PEOPLE.length * 100) + "%";
+  document.getElementById("seeFits").disabled = setIds.size < PEOPLE.length;
+}
+
+// 4. Fits everyone
+const fitsAll = (s, d) => PEOPLE.every(p => cost(p, s, d) <= p.budget);
+function startFits() {
+  myVote = null; votes = {};
+  renderFits();
+  // friends vote live among what fits
+  ["sana", "dev", "aditya", "riya", "kabir"].forEach((id, k) => later(1200 + k * 900, () => {
+    const opts = STAYS.filter(s => fitsAll(s, dates));
+    if (!opts.length) return;
+    const pick = opts[(k * 2 + id.length) % opts.length];
+    votes[id] = pick.id; renderFits();
+  }));
+}
+function setDates(d) {
+  dates = d; votes = {}; myVote = null;
+  document.getElementById("dDec").setAttribute("aria-pressed", d === "dec");
+  document.getElementById("dJan").setAttribute("aria-pressed", d === "jan");
+  renderFits();
+}
+document.getElementById("dDec").onclick = () => setDates("dec");
+document.getElementById("dJan").onclick = () => setDates("jan");
+
+function renderFits() {
+  for (const d of ["dec", "jan"]) {
+    const n = STAYS.filter(s => fitsAll(s, d)).length;
+    document.getElementById(d === "dec" ? "dDecN" : "dJanN").textContent = n ? `${n} fit everyone` : "none fit";
+  }
+  const fit = STAYS.filter(s => fitsAll(s, dates)).sort((a, b) => (b.sponsored ? 1 : 0) - (a.sponsored ? 1 : 0) || a.ppn - b.ppn);
+  const hidden = STAYS.length - fit.length;
+  // drop votes for stays that no longer fit
+  for (const k in votes) if (!fit.find(s => s.id === votes[k])) delete votes[k];
+  if (myVote && !fit.find(s => s.id === myVote)) myVote = null;
+  const tally = id => Object.values(votes).filter(v => v === id).length + (myVote === id ? 1 : 0);
+
+  document.getElementById("stays").innerHTML = fit.length ? fit.map(s => {
+    const voters = PEOPLE.filter(p => (p.id === "me" ? myVote : votes[p.id]) === s.id);
+    return `<div class="stay ${s.sponsored ? "sponsored" : ""}">
+      <div class="top"><div><div class="name">${s.name}</div><div class="meta">${s.area} · ${s.note}</div></div>
+        <div class="price">${inr(s.ppn)}<span class="meta">/night</span></div></div>
+      <div class="meta">Your trip total ${inr(cost(P.me, s, dates))} · ${s.sponsored ? `<span class="sp">Sponsored</span> shown because it fits all 6` : "fits all 6 budgets"}</div>
+      <div class="bottom"><div class="voters" style="display:flex;gap:2px">${voters.map(p => avatar(p, 20)).join("")}</div>
+        <button class="vote" data-vote="${s.id}" aria-pressed="${myVote === s.id}">${myVote === s.id ? "Your pick" : "Vote"} · ${tally(s.id)}</button></div>
+    </div>`;
+  }).join("") : `<div class="empty">No stay fits everyone on ${DATES[dates]}. Try the other dates, or ask the group to stretch. Nobody is told whose limit it is.</div>`;
+
+  document.querySelectorAll("[data-vote]").forEach(b => b.onclick = () => { myVote = myVote === b.dataset.vote ? null : b.dataset.vote; renderFits(); });
+  document.getElementById("hiddenNote").innerHTML = hidden
+    ? `${LOCK}<span>${hidden} option${hidden > 1 ? "s are" : " is"} over someone's budget and hidden. Common Ground never shows which ones, or whose budget.</span>`
+    : `${LOCK}<span>Every option fits everyone on these dates.</span>`;
+  document.getElementById("fitsEyebrow").textContent = `${DATES[dates]} · fits all 6 budgets`;
+  const btn = document.getElementById("bookBtn");
+  btn.disabled = !fit.length;
+  const top = topPick(fit, tally);
+  btn.textContent = top ? `Book ${top.name}` : "Nothing fits these dates";
+}
+function topPick(fit, tally) {
+  if (!fit.length) return null;
+  return [...fit].sort((a, b) => tally(b.id) - tally(a.id) || (b.id === myVote) - (a.id === myVote) || a.ppn - b.ppn)[0];
+}
+
+// 5. Booking (friends pay in real time)
+function startBooking() {
+  const fit = STAYS.filter(s => fitsAll(s, dates));
+  const tally = id => Object.values(votes).filter(v => v === id).length + (myVote === id ? 1 : 0);
+  const pick = topPick(fit, tally) || STAYS[STAYS.length - 1];
+  document.getElementById("bookedEyebrow").textContent = `${pick.name} · ${DATES[dates]}`;
+  document.getElementById("myShare").textContent = inr(FLIGHTS.Delhi[dates] + pick.ppn * NIGHTS);
+  document.getElementById("doneLine").hidden = true;
+  const paid = new Set();
+  const render = () => {
+    document.getElementById("payList").innerHTML = PEOPLE.map(p => {
+      const on = paid.has(p.id);
+      return `<div class="row">${avatar(p)}<div class="who"><b>${p.name}</b><span>${p.city}–Goa + stay · ${inr(FLIGHTS[p.city][dates] + pick.ppn * NIGHTS)}</span></div>
+        <span class="st ${on ? "on" : ""}">${on ? "Paid" : "Paying…"}</span></div>`;
+    }).join("");
+    document.getElementById("payProg").style.width = (paid.size / PEOPLE.length * 100) + "%";
+    document.getElementById("doneLine").hidden = paid.size < PEOPLE.length;
+  };
+  render();
+  PEOPLE.forEach((p, k) => later(500 + k * 600, () => { paid.add(p.id); render(); }));
+}
+
+// Demo panel: friends' private budgets, live
+function buildDemo() {
+  document.getElementById("demoRows").innerHTML = PEOPLE.map(p => `
+    <div class="frow"><div><b>${p.name}</b><small>${p.city}</small></div>
+    <input type="range" min="8000" max="40000" step="500" value="${p.budget}" id="d-${p.id}" aria-label="${p.name}'s budget">
+    <span id="dv-${p.id}">${inr(p.budget)}</span></div>`).join("");
+  PEOPLE.forEach(p => document.getElementById("d-" + p.id).addEventListener("input", e => {
+    p.budget = Number(e.target.value);
+    document.getElementById("dv-" + p.id).textContent = inr(p.budget);
+    if (p.id === "me") { slider.value = p.budget; renderBudget(); }
+    if (step === 3) renderFits();
+  }));
+}
+function syncDemo() {
+  const s = document.getElementById("d-me"); if (s) s.value = P.me.budget;
+  const v = document.getElementById("dv-me"); if (v) v.textContent = inr(P.me.budget);
+}
+
+buildDemo();
+go(0);
+</script>
