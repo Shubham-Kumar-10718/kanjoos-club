@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Common Ground Trip Planner</title>
+<title>Kanjoos Club</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
@@ -182,7 +182,7 @@ h2 { font-family: var(--display); font-weight: 800; font-size: 27px; line-height
 <div class="wrap">
   <section class="story" aria-label="About this prototype">
     <div>
-      <div class="brand">Common<span>Ground</span></div>
+      <div class="brand">Kanjoos<span>Club</span></div>
       <p class="tag">Group trips that fit everyone's budget. Each friend sets a limit privately, and the group only sees options that work for all of them.</p>
     </div>
     <ol class="steps" id="steps"></ol>
@@ -198,7 +198,7 @@ h2 { font-family: var(--display); font-weight: 800; font-size: 27px; line-height
 
   <div class="phone">
     <div class="screen">
-      <div class="bar"><span>9:12</span><span>Common Ground</span><span>5G</span></div>
+      <div class="bar"><span>9:12</span><span>Kanjoos Club</span><span>5G</span></div>
 
       <!-- 1. The poll -->
       <div class="view" data-step="0">
@@ -218,7 +218,7 @@ h2 { font-family: var(--display); font-weight: 800; font-size: 27px; line-height
           <div class="row" style="align-items:flex-start">
             <div class="av" style="background:#b5462f">A</div>
             <div style="min-width:0">
-              <b>Aditya started a Common Ground plan</b>
+              <b>Aditya started a Kanjoos Club plan</b>
               <p class="sub" style="margin:2px 0 0">Set your budget privately. Nobody sees your number.</p>
             </div>
           </div>
@@ -476,7 +476,7 @@ function renderFits() {
 
   document.querySelectorAll("[data-vote]").forEach(b => b.onclick = () => { myVote = myVote === b.dataset.vote ? null : b.dataset.vote; renderFits(); });
   document.getElementById("hiddenNote").innerHTML = hidden
-    ? `${LOCK}<span>${hidden} option${hidden > 1 ? "s are" : " is"} over someone's budget and hidden. Common Ground never shows which ones, or whose budget.</span>`
+    ? `${LOCK}<span>${hidden} option${hidden > 1 ? "s are" : " is"} over someone's budget and hidden. Kanjoos Club never shows which ones, or whose budget.</span>`
     : `${LOCK}<span>Every option fits everyone on these dates.</span>`;
   document.getElementById("fitsEyebrow").textContent = `${DATES[dates]} · fits all 6 budgets`;
   const btn = document.getElementById("bookBtn");

@@ -1,4 +1,4 @@
-# Common Ground: Group Trips That Fit Every Budget
+# Kanjoos Club: Group Trips That Fit Every Budget
 
 Scapia Product Internship Assignment
 
@@ -38,7 +38,7 @@ I then compare each person's private answer with the option their group actually
 
 ## The idea
 
-**Common Ground** is a group trip planner where each friend's budget is a private limit, not a public vote.
+**Kanjoos Club** ("kanjoos" is Hindi for miser) is a group trip planner where each friend's budget is a private limit, not a public vote.
 
 1. **The organiser starts a plan** and shares it in the existing WhatsApp group.
 2. **Each friend privately sets a total trip ceiling,** flights from their own city included. As they drag the slider, they see how many trip options fit their number, so they know what it means before locking it.
